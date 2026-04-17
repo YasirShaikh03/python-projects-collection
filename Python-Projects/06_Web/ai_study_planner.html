@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI Powered Study Planner — Single File</title>
+
+  <!-- Inline CSS (all styling in one file) -->
+  <style>
+    :root{
+      --bg:#f8faff;
+      --nav:#1a237e;
+      --accent:#1e88e5;
+      --card:#ffffff;
+      --muted:#334155;
+      --radius:10px;
+      --maxw:1100px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter, "Poppins", Arial, sans-serif;
+      background:var(--bg);
+      color:#12202b;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.5;
+      padding:24px;
+      display:flex;
+      justify-content:center;
+    }
+
+    .wrap{
+      width:100%;
+      max-width:var(--maxw);
+      background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(250,253,255,0.98));
+      border-radius:14px;
+      box-shadow:0 10px 30px rgba(16,24,64,0.08);
+      overflow:hidden;
+    }
+
+    header{
+      background:var(--nav);
+      color:white;
+      padding:14px 20px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+    header .brand{display:flex;gap:12px; align-items:center}
+    header h1{font-size:18px;margin:0;font-weight:700; letter-spacing:0.2px}
+    header nav a{
+      color:rgba(255,255,255,0.95);
+      text-decoration:none;
+      margin-left:14px;
+      font-weight:600;
+      font-size:14px;
+    }
+    header nav a:hover{opacity:0.9; text-decoration:underline}
+
+    main{padding:26px 28px; display:grid; grid-template-columns: 1fr 380px; gap:22px;}
+    @media (max-width:980px){
+      main{grid-template-columns:1fr; padding:18px;}
+    }
+
+    /* Left column (pages) */
+    .page{
+      background:transparent;
+    }
+
+    .hero{
+      background:linear-gradient(120deg,#64b5f6,#1e88e5);
+      color:white;
+      padding:22px;
+      border-radius:12px;
+      box-shadow:0 6px 18px rgba(30,60,120,0.12);
+    }
+    .hero h2{margin:0 0 6px 0; font-size:20px}
+    .hero p{margin:0 0 12px 0; opacity:0.95}
+    .hero .controls{display:flex; gap:8px; margin-top:12px; flex-wrap:wrap}
+    .hero input[type="text"]{
+      padding:10px 12px;
+      border-radius:8px;
+      border:1px solid rgba(255,255,255,0.18);
+      min-width:180px;
+      outline:none;
+    }
+    .btn{
+      background:var(--accent);
+      color:white;
+      border:none;
+      padding:10px 14px;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:600;
+    }
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.12);color:white}
+
+    .features{
+      display:flex;
+      gap:14px;
+      margin-top:18px;
+      flex-wrap:wrap;
+    }
+    .feature-card{
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:14px;
+      box-shadow:0 6px 16px rgba(16,24,64,0.04);
+      width:calc(33% - 9px);
+      min-width:180px;
+      text-align:left;
+    }
+    .feature-card h3{margin:0 0 6px 0; font-size:15px}
+    .feature-card p{margin:0; color:var(--muted); font-size:13px}
+
+    /* Dashboard table */
+    .card{
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:14px;
+      box-shadow:0 6px 18px rgba(16,24,64,0.04);
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:14px;
+      margin-top:8px;
+    }
+    th, td{
+      padding:10px 8px;
+      border-bottom:1px solid #eef4ff;
+      text-align:left;
+    }
+    thead th{color:var(--muted); font-weight:700; font-size:13px}
+    td:last-child{text-align:right}
+
+    .small{font-size:12px; color:var(--muted)}
+
+    /* Right column (sidebar analytics) */
+    .sidebar{
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+    .progress{
+      padding:14px;
+      border-radius:10px;
+      background:linear-gradient(180deg,#fff,#fcfeff);
+      text-align:center;
+    }
+    .progress .big{font-size:28px; font-weight:800; color:var(--nav)}
+    .chart-placeholder{
+      height:180px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:8px;
+      border:2px dashed #cfe3ff;
+      color:var(--nav);
+      background:linear-gradient(180deg,#fbfdff,#fff);
+      margin-top:10px;
+    }
+
+    footer{
+      padding:14px 20px;
+      text-align:center;
+      background:transparent;
+      font-size:13px;
+      color:var(--muted);
+      border-top:1px solid rgba(16,24,64,0.03);
+    }
+
+    /* small helpers */
+    .muted{color:var(--muted); font-size:13px}
+    .flex{display:flex;gap:8px;align-items:center}
+    .right{margin-left:auto}
+  </style>
+</head>
+<body>
+  <div class="wrap" role="application" aria-label="AI Study Planner">
+    <header>
+      <div class="brand">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" aria-hidden>
+          <rect width="24" height="24" rx="6" fill="#ffffff20"></rect>
+          <path d="M7 13h10M7 8h7" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        <h1>AI Study Planner</h1>
+      </div>
+      <nav aria-label="Main navigation">
+        <a href="#home">Home</a>
+        <a href="#dashboard">Dashboard</a>
+        <a href="#analytics">Analytics</a>
+        <a href="#" title="Logout">Logout</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- Left column: Home + Dashboard content -->
+      <section class="page" id="home">
+        <div class="hero card" role="region" aria-label="Hero section">
+          <h2>Plan Smart. Study Smarter.</h2>
+          <p>Let AI design your personalized study routine — add subjects, set goals, and get smart recommendations.</p>
+
+          <div class="controls">
+            <input id="subjectInput" type="text" placeholder="Enter subject or topic..." aria-label="Subject or topic">
+            <button class="btn" onclick="generatePlan()">Generate Plan</button>
+            <button class="btn ghost" onclick="clearInput()">Clear</button>
+          </div>
+
+          <div class="features" aria-hidden="false" style="margin-top:16px">
+            <div class="feature-card">
+              <h3>Personalized Plans</h3>
+              <p>AI builds a schedule tailored to your goals and available time.</p>
+            </div>
+            <div class="feature-card">
+              <h3>Track Progress</h3>
+              <p>Visualize daily achievements and streaks to stay motivated.</p>
+            </div>
+            <div class="feature-card">
+              <h3>Smart Suggestions</h3>
+              <p>AI suggests focus topics, break timing, and revision slots.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" id="dashboard" style="margin-top:18px" role="region" aria-label="Dashboard">
+          <h2 style="margin:0 0 8px 0">Your Personalized Study Plan</h2>
+          <div class="muted">Modify the plan or mark tasks as done.</div>
+
+          <table aria-describedby="plan-desc">
+            <thead>
+              <tr><th>Subject</th><th style="width:110px">Duration</th><th>AI Tip</th><th style="width:120px"></th></tr>
+            </thead>
+            <tbody id="planBody">
+              <tr>
+                <td>Mathematics</td>
+                <td>2 Hours</td>
+                <td>Practice problem sets & formula flashcards</td>
+                <td class="right"><button class="btn" onclick="markDone(this)">Mark Done</button></td>
+              </tr>
+              <tr>
+                <td>Biology</td>
+                <td>1.5 Hours</td>
+                <td>Use diagrams & spaced repetition</td>
+                <td class="right"><button class="btn" onclick="markDone(this)">Mark Done</button></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div style="display:flex;gap:8px;margin-top:12px;align-items:center;">
+            <button class="btn" onclick="addSample()">Add Sample Task</button>
+            <div class="small muted" style="margin-left:auto">Auto-saved locally (demo)</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right column: Analytics / Progress -->
+      <aside class="sidebar" id="analytics" role="complementary">
+        <div class="progress card" aria-label="Progress summary">
+          <div class="muted">Weekly Goal Completion</div>
+          <div class="big" style="margin-top:6px">70%</div>
+          <div class="chart-placeholder" id="chart">[Progress Chart Placeholder]</div>
+          <div class="small muted" style="margin-top:8px">AI insight: Increase focused sessions by 10–15% on weak topics.</div>
+        </div>
+
+        <div class="card">
+          <h3 style="margin:0 0 6px 0">Today's Summary</h3>
+          <div class="small muted">Completed: <strong id="doneCount">0</strong> / <span id="totalCount">2</span></div>
+          <div style="margin-top:10px" class="muted">Tips</div>
+          <ul style="margin:8px 0 0 18px;color:var(--muted);font-size:13px">
+            <li>Use Pomodoro (25/5) for focused practice.</li>
+            <li>Review weakest topic for 20 minutes before bed.</li>
+          </ul>
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      © 2025 AI Powered Study Planner | Smart Learning for Every Student
+    </footer>
+  </div>
+
+  <!-- Tiny JS for demo interactions (no backend) -->
+  <script>
+    // Demo: simple client-side interactions
+    function generatePlan(){
+      const subject = document.getElementById('subjectInput').value.trim() || 'your subject';
+      // For demo, add a row to the table with a simple AI tip
+      const tbody = document.getElementById('planBody');
+      const row = document.createElement('tr');
+      row.innerHTML = '<td>' + escapeHtml(subject) + '</td>' +
+                      '<td>1 Hour</td>' +
+                      '<td>Focus on core concepts & active recall</td>' +
+                      '<td class="right"><button class="btn" onclick="markDone(this)">Mark Done</button></td>';
+      tbody.appendChild(row);
+      updateCounts();
+      alert('AI is generating a study plan for: ' + subject + ' (demo)');
+    }
+
+    function addSample(){
+      const samples = [['Physics','1.5 Hours','Solve numerical problems'],['History','1 Hour','Create timeline notes']];
+      const s = samples[Math.floor(Math.random()*samples.length)];
+      const tbody = document.getElementById('planBody');
+      const row = document.createElement('tr');
+      row.innerHTML = '<td>' + s[0] + '</td><td>' + s[1] + '</td><td>' + s[2] + '</td><td class="right"><button class="btn" onclick="markDone(this)">Mark Done</button></td>';
+      tbody.appendChild(row);
+      updateCounts();
+    }
+
+    function markDone(btn){
+      // simple visual effect: disable button and strike-through row
+      const tr = btn.closest('tr');
+      if(!tr) return;
+      tr.style.opacity = '0.6';
+      tr.style.textDecoration = 'line-through';
+      btn.disabled = true;
+      btn.textContent = 'Done';
+      updateCounts();
+    }
+
+    function clearInput(){
+      document.getElementById('subjectInput').value = '';
+    }
+
+    function updateCounts(){
+      const rows = document.querySelectorAll('#planBody tr');
+      const total = rows.length;
+      let done = 0;
+      rows.forEach(r=>{
+        const btn = r.querySelector('button');
+        if(btn && btn.disabled) done++;
+      });
+      document.getElementById('totalCount').textContent = total;
+      document.getElementById('doneCount').textContent = done;
+      // update progress placeholder (demo)
+      const percent = Math.round((done/Math.max(total,1))*100);
+      document.querySelector('.big').textContent = (isNaN(percent) ? '0' : percent) + '%';
+      document.getElementById('chart').textContent = '[Progress Chart Placeholder: ' + (isNaN(percent) ? '0' : percent) + '%]';
+    }
+
+    // simple helper to avoid HTML injection in demo
+    function escapeHtml(s){
+      return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
+    }
+
+    // init counts on load
+    updateCounts();
+  </script>
+</body>
+</html>

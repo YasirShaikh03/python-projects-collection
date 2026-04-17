@@ -1,0 +1,41 @@
+# ──────────────────────────────────────────────
+#  Python Projects Collection — Requirements
+# ──────────────────────────────────────────────
+
+# GUI
+tkinter          # built-in (no install needed)
+tkcalendar
+
+# Terminal Colors
+colorama
+
+# Sound & Notifications
+playsound
+plyer
+
+# PDF
+pypdf
+pyttsx3
+
+# QR Code
+pyqrcode
+pypng
+
+# Computer Vision & AI
+opencv-python
+mediapipe
+ultralytics      # YOLOv8
+numpy
+
+# Automation
+pywhatkit
+pytube
+moviepy
+
+# Data / ML (for smart_academic_system)
+scikit-learn
+matplotlib
+fpdf
+
+# Pillow (image handling)
+Pillow
