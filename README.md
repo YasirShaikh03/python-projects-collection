@@ -152,6 +152,13 @@ This project is built for:
 * Improve UI/UX design
 * Integrate more AI features
 
+
+---
+
+## 📜 License
+
+This project is licensed under the MIT License.
+
 ---
 
 ## Author
@@ -159,9 +166,3 @@ This project is built for:
 Yasir Shaikh 
 
 GitHub: https://github.com/YasirShaikh03
-
----
-
-## 📜 License
-
-This project is licensed under the MIT License.
