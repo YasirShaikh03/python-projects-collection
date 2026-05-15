@@ -45,7 +45,7 @@ This repository contains a collection of Python projects ranging from beginner t
 ### 🤖 AI / Computer Vision
 
 * Face detection using OpenCV
-* YOLO object detection
+* YOLO object detection / electronic device detection
 * Smart Health & Fitness AI system
 * Posture detection system
 
